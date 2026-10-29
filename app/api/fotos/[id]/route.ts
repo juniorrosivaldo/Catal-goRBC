@@ -1,0 +1,2 @@
+import {env} from 'cloudflare:workers';
+export async function GET(req:Request,{params}:{params:Promise<{id:string}>}){const {id}=await params;if(!/^[a-f0-9-]{36}$/.test(id)||!env.BUCKET)return new Response(null,{status:404});const object=await env.BUCKET.get('motors/'+id);if(!object)return new Response(null,{status:404});return new Response(object.body,{headers:{'Content-Type':object.httpMetadata?.contentType||'image/jpeg','Cache-Control':'public,max-age=86400','X-Content-Type-Options':'nosniff'}})}
